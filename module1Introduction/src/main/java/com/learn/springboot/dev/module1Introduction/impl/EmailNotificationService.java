@@ -1,7 +1,11 @@
 package com.learn.springboot.dev.module1Introduction.impl;
 
 import com.learn.springboot.dev.module1Introduction.NotificationService;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 
+@Primary
+@Component
 public class EmailNotificationService implements NotificationService {
 
     @Override
