@@ -52,3 +52,8 @@
 	</build>
 
 </project>
+
+<!--Notes-->
+<!-- All the dependencies are the part of Maven, they all are coming from maven central and downloaded and handled by Maven that has been already configured inside our spring boot project-->
+<!-- Maven also uses all the configurations defined here in order to build our application-->
+
