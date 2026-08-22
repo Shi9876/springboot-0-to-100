@@ -1,0 +1,12 @@
+package com.learn.springboot.dev.module1Introduction.practice.alicebakery;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class StrawberryFrosting implements Frosting{
+
+    @Override
+    public String getFrostingType() {
+        return "Strawberry";
+    }
+}
