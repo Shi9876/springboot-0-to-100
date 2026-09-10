@@ -1,6 +1,8 @@
 package com.learn.springboot.dev.module2SpringBootWebTutorialApplication.Controllers;
 
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.dto.EmployeeDTO;
+import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.entities.EmployeeEntity;
+import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.repositories.EmployeeRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -15,22 +17,39 @@ public class EmployeeController {
 //        return "Secret message: aadea668ASE";
 //    }
 
+    private final EmployeeRepository employeeRepository;
+
+    public EmployeeController(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
     @GetMapping(path = "/{employeeId}") //make sure that user provides the employee id
 //    public EmployeeDTO getEmployeeById(@PathVariable Long employeeId){//mandatory data
 //        return new EmployeeDTO(employeeId, "Shivanshi", "shiv@gmail.com", 25, LocalDate.of(2026, 9, 2), true);
 //    }
 
     //For using different variable names - (/{employeeId} and id)
-    public EmployeeDTO getEmployeeById(@PathVariable(name = "employeeId") Long id){//other way to define if we want to rename it instead of employeeId to id only
-        return new EmployeeDTO(id, "Shivanshi", "shiv@gmail.com", 25, LocalDate.of(2026, 9, 2), true);
-    }
+//    public EmployeeDTO getEmployeeById(@PathVariable(name = "employeeId") Long id){//other way to define if we want to rename it instead of employeeId to id only
+//        //return new EmployeeDTO(id, "Shivanshi", "shiv@gmail.com", 25, LocalDate.of(2026, 9, 2), true);
+//    }
+//
+    public EmployeeEntity getEmployeeById(@PathVariable(name = "employeeId") Long id){
+    return employeeRepository.findById(id).orElse(null);
+}
 
 
     //this - (name ="inputAge"), we use when we want different names for the input and the code
+//    @GetMapping
+//    public String getAllEmployees(@RequestParam(required = false, name ="inputAge") Integer age,
+//                                  @RequestParam(required = false) String sortBy) {// optional data
+//    return "Hi age "+ age +" "+sortBy;
+//    }
+
     @GetMapping
-    public String getAllEmployees(@RequestParam(required = false, name ="inputAge") Integer age,
+    public List<EmployeeEntity> getAllEmployees(@RequestParam(required = false, name ="inputAge") Integer age,
                                   @RequestParam(required = false) String sortBy) {// optional data
-    return "Hi age "+ age +" "+sortBy;
+
+        return employeeRepository.findAll();//all the employee that we having will return from here
     }
 
 //    @PostMapping //for creating new resource
@@ -38,10 +57,15 @@ public class EmployeeController {
 //        return "Hello from Post";
 //    }
 
+//    @PostMapping
+//    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO inputEmployee){
+//        inputEmployee.setId(100L);  //so user no need to provide the id, we will provide it
+//        return inputEmployee;
+//    }
+
     @PostMapping
-    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO inputEmployee){
-        inputEmployee.setId(100L);  //so user no need to provide the id, we will provide it
-        return inputEmployee;
+    public EmployeeEntity createNewEmployee(@RequestBody EmployeeEntity inputEmployee){
+        return employeeRepository.save(inputEmployee); //saving the employee and not returning any optional
     }
 
     @PutMapping //updating the whole resource
