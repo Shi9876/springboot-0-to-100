@@ -3,6 +3,7 @@ package com.learn.springboot.dev.module2SpringBootWebTutorialApplication.Control
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.dto.EmployeeDTO;
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.entities.EmployeeEntity;
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.repositories.EmployeeRepository;
+import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -17,10 +18,10 @@ public class EmployeeController {
 //        return "Secret message: aadea668ASE";
 //    }
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeController(EmployeeService employeeService){
+        this.employeeService = employeeService;
     }
 
     @GetMapping(path = "/{employeeId}") //make sure that user provides the employee id
@@ -33,8 +34,8 @@ public class EmployeeController {
 //        //return new EmployeeDTO(id, "Shivanshi", "shiv@gmail.com", 25, LocalDate.of(2026, 9, 2), true);
 //    }
 //
-    public EmployeeEntity getEmployeeById(@PathVariable(name = "employeeId") Long id){
-    return employeeRepository.findById(id).orElse(null);
+    public EmployeeDTO getEmployeeById(@PathVariable(name = "employeeId") Long id){
+    return employeeService.getEmployeeById(id);
 }
 
 
@@ -46,10 +47,10 @@ public class EmployeeController {
 //    }
 
     @GetMapping
-    public List<EmployeeEntity> getAllEmployees(@RequestParam(required = false, name ="inputAge") Integer age,
+    public List<EmployeeDTO> getAllEmployees(@RequestParam(required = false, name ="inputAge") Integer age,
                                   @RequestParam(required = false) String sortBy) {// optional data
 
-        return employeeRepository.findAll();//all the employee that we having will return from here
+        return employeeService.getAllEmployees();//all the employee that we having will return from here
     }
 
 //    @PostMapping //for creating new resource
@@ -64,8 +65,8 @@ public class EmployeeController {
 //    }
 
     @PostMapping
-    public EmployeeEntity createNewEmployee(@RequestBody EmployeeEntity inputEmployee){
-        return employeeRepository.save(inputEmployee); //saving the employee and not returning any optional
+    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO inputEmployee){
+        return employeeService.createNewEmployee(inputEmployee); //saving the employee and not returning any optional
     }
 
     @PutMapping //updating the whole resource
