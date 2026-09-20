@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/employees") //path for the parent
@@ -69,11 +70,22 @@ public class EmployeeController {
         return employeeService.createNewEmployee(inputEmployee); //saving the employee and not returning any optional
     }
 
-    @PutMapping //updating the whole resource
-    public String updateEmployeeById(){
-        return "Hello from put";
+    @PutMapping(path = "/{employeeId}") //updating the whole resource
+    public EmployeeDTO updateEmployeeById(@RequestBody EmployeeDTO employeeDTO,
+                                          @PathVariable Long employeeId) {
+       return employeeService.updateEmployeeById(employeeId, employeeDTO);
     }
 
+    @DeleteMapping(path = "/{employeeId}")
+    public boolean deleteEmployeeById(@PathVariable Long employeeId){
+       return employeeService.deleteEmployeeById(employeeId);
+    }
+
+    @PatchMapping(path = "/{employeeId}")//to update some employee with some partial data
+    public EmployeeDTO updatePartialEmployeeById(@RequestBody Map<String, Object> updates,
+                                             @PathVariable Long employeeId){
+        return employeeService.updatePartialEmployeeById(employeeId, updates);
+    }
 }
 
 
@@ -176,5 +188,6 @@ public class EmployeeController {
  * - The Controller passes it to the Service layer.
  * - The Service handles the business logic.
  *
+ * Can use ResponseEntity to return the status code
  * =================================================================
  */
