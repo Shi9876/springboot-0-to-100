@@ -4,11 +4,14 @@ import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.dto.Empl
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.entities.EmployeeEntity;
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.repositories.EmployeeRepository;
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.services.EmployeeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/employees") //path for the parent
@@ -35,8 +38,11 @@ public class EmployeeController {
 //        //return new EmployeeDTO(id, "Shivanshi", "shiv@gmail.com", 25, LocalDate.of(2026, 9, 2), true);
 //    }
 //
-    public EmployeeDTO getEmployeeById(@PathVariable(name = "employeeId") Long id){
-    return employeeService.getEmployeeById(id);
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable(name = "employeeId") Long id){
+    Optional<EmployeeDTO> employeeDTO =  employeeService.getEmployeeById(id);
+    return employeeDTO
+            .map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))//will going to return the instance of ResponseEntity
+            .orElse(ResponseEntity.notFound().build());
 }
 
 
@@ -48,10 +54,10 @@ public class EmployeeController {
 //    }
 
     @GetMapping
-    public List<EmployeeDTO> getAllEmployees(@RequestParam(required = false, name ="inputAge") Integer age,
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees(@RequestParam(required = false, name ="inputAge") Integer age,
                                   @RequestParam(required = false) String sortBy) {// optional data
 
-        return employeeService.getAllEmployees();//all the employee that we having will return from here
+        return ResponseEntity.ok(employeeService.getAllEmployees());//all the employee that we having will return from here
     }
 
 //    @PostMapping //for creating new resource
@@ -66,25 +72,30 @@ public class EmployeeController {
 //    }
 
     @PostMapping
-    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO inputEmployee){
-        return employeeService.createNewEmployee(inputEmployee); //saving the employee and not returning any optional
+    public ResponseEntity<EmployeeDTO> createNewEmployee(@RequestBody EmployeeDTO inputEmployee){
+        EmployeeDTO savedEmployee = employeeService.createNewEmployee(inputEmployee); //saving the employee and not returning any optional
+        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{employeeId}") //updating the whole resource
-    public EmployeeDTO updateEmployeeById(@RequestBody EmployeeDTO employeeDTO,
+    public ResponseEntity<EmployeeDTO> updateEmployeeById(@RequestBody EmployeeDTO employeeDTO,
                                           @PathVariable Long employeeId) {
-       return employeeService.updateEmployeeById(employeeId, employeeDTO);
+      return ResponseEntity.ok(employeeService.updateEmployeeById(employeeId, employeeDTO));
     }
 
     @DeleteMapping(path = "/{employeeId}")
-    public boolean deleteEmployeeById(@PathVariable Long employeeId){
-       return employeeService.deleteEmployeeById(employeeId);
+    public ResponseEntity<Boolean> deleteEmployeeById(@PathVariable Long employeeId){
+       boolean gotDeleted = employeeService.deleteEmployeeById(employeeId);
+       if(gotDeleted) return ResponseEntity.ok(true);
+       return ResponseEntity.notFound().build();
     }
 
     @PatchMapping(path = "/{employeeId}")//to update some employee with some partial data
-    public EmployeeDTO updatePartialEmployeeById(@RequestBody Map<String, Object> updates,
+    public ResponseEntity<EmployeeDTO> updatePartialEmployeeById(@RequestBody Map<String, Object> updates,
                                              @PathVariable Long employeeId){
-        return employeeService.updatePartialEmployeeById(employeeId, updates);
+        EmployeeDTO employeeDTO = employeeService.updatePartialEmployeeById(employeeId, updates);
+        if(employeeDTO == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(employeeDTO);
     }
 }
 
