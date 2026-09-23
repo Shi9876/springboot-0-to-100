@@ -27,7 +27,7 @@ public class EmployeeService {
 
     public Optional<EmployeeDTO> getEmployeeById(Long id) {
 //       Optional<EmployeeEntity> employeeEntity = employeeRepository.findById(id);//return as am Employee entity
-//        return employeeEntity.map(employeeEntity1 -> modelMapper.map(employeeEntity, EmployeeDTO.class));
+//        return employeeEntity.map(employeeEntity1 -> modelMapper.map(employeeEntity1, EmployeeDTO.class));
 
         return employeeRepository.findById(id).map(employeeEntity -> modelMapper.map(employeeEntity, EmployeeDTO.class));
     }
@@ -68,7 +68,7 @@ public class EmployeeService {
     }
 
     public EmployeeDTO updatePartialEmployeeById(Long employeeId, Map<String, Object> updates) {
-        boolean exists = employeeRepository.existsById(employeeId);
+        boolean exists = isExistsByEmployeeId(employeeId);
         if(!exists) return null;
         EmployeeEntity employeeEntity = employeeRepository.findById(employeeId).get();
         updates.forEach((field, value) ->{

@@ -4,6 +4,7 @@ import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.dto.Empl
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.entities.EmployeeEntity;
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.repositories.EmployeeRepository;
 import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +73,7 @@ public class EmployeeController {
 //    }
 
     @PostMapping
-    public ResponseEntity<EmployeeDTO> createNewEmployee(@RequestBody EmployeeDTO inputEmployee){
+    public ResponseEntity<EmployeeDTO> createNewEmployee(@RequestBody @Valid EmployeeDTO inputEmployee){
         EmployeeDTO savedEmployee = employeeService.createNewEmployee(inputEmployee); //saving the employee and not returning any optional
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
