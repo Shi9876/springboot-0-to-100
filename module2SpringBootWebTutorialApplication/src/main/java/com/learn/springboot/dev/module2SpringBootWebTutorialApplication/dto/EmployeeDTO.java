@@ -1,5 +1,7 @@
 package com.learn.springboot.dev.module2SpringBootWebTutorialApplication.dto;
 
+import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.annotations.EmployeeCodeValidation;
+import com.learn.springboot.dev.module2SpringBootWebTutorialApplication.annotations.EmployeeRoleValidation;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -24,8 +26,12 @@ public class EmployeeDTO {  //this is our POJO class
     private Integer age;
 
    @NotBlank(message = "Role of the employee cannot be blank")
-   @Pattern(regexp = "^(ADMIN|USER)$", message = "Role of Employee can either be USER or ADMIN")
+   //@Pattern(regexp = "^(ADMIN|USER)$", message = "Role of Employee can either be USER or ADMIN")
+   @EmployeeRoleValidation
    private String role; //ADMIN, USER
+
+    @EmployeeCodeValidation
+    private String employeeCode;
 
     @NotNull(message = "Salary of employee should be not null")
     @Positive(message = "Salary of Employee should be positive")
@@ -44,12 +50,13 @@ public class EmployeeDTO {  //this is our POJO class
 
     }
 
-    public EmployeeDTO(Long id, String name, String email, Integer age, String role, Double salary, LocalDate dateOfJoining, Boolean isActive){     //all argument constructor
+    public EmployeeDTO(Long id, String name, String email, Integer age, String role, String employeeCode, Double salary, LocalDate dateOfJoining, Boolean isActive){     //all argument constructor
     this.id = id;
     this.name = name;
     this.email = email;
     this.age = age;
     this.role = role;
+    this.employeeCode = employeeCode;
     this.salary = salary;
     this.dateOfJoining = dateOfJoining;
     this.isActive = isActive;
@@ -94,6 +101,14 @@ public class EmployeeDTO {  //this is our POJO class
 
     public void setRole(String role){
         this.role = role;
+    }
+
+    public String getEmployeeCode(){
+        return employeeCode;
+    }
+
+    public void setEmployeeCode(String employeeCode){
+        this.employeeCode = employeeCode;
     }
 
     public Double getSalary(){
